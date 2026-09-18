@@ -1,0 +1,33 @@
+# Ocultar contraseñas y variables de entorno
+.env
+*.env
+
+# Ocultar basura de Python
+__pycache__/
+*.pyc
+
+# Ocultar bases de datos locales (opcional)
+*.db
+*.sqlite3
+
+# Ocultar la carpeta de entorno virtual
+venv/
+.venv/
+env/
+
+# Configuración de Frontend y dependencias
+node_modules/
+dist/
+.build/
+
+#------ CARPETAS ------
+CURSOS/
+DOCUMENTACIÓN/
+DOCUMENTACION/
+
+#------ ARCHIVOS SUELTOS ------
+ejemplo.pdf
+*.pdf
+borrador_lectorCV.py
+borrador.tsx
+estructura.txt

@@ -1,0 +1,10 @@
+{
+  "description": "This EdTech platform offers personalized AI-driven learning paths and interactive course evaluations, empowering students to enhance their skills efficiently.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

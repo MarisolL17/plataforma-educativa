@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+/* ── Tokens ─────────────────────────────────────────────────── */
+@theme {
+  --font-display: 'Montserrat', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+
+  --color-navy:         #30406F;
+  --color-navy-dark:    #233058;
+  --color-navy-light:   #4A5A8A;
+  --color-sky:          #6EA7DA;
+  --color-sky-alt:      #64A6DB;
+  --color-sky-pale:     #EBF4FB;
+  --color-gold:         #FABF38;
+  --color-gold-dark:    #E5A91A;
+  --color-gold-pale:    #FEF7E6;
+  --color-page:         #FFFFFF;
+  --color-section:      #F8FAFC;
+  --color-card:         #FFFFFF;
+  --color-border:       rgba(110,167,218,0.30);
+  --color-border-soft:  rgba(48,64,111,0.08);
+  --color-text:         #334155;
+  --color-muted:        #64748B;
+  --color-muted-light:  #94A3B8;
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: #FFFFFF;
+  color: #334155;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(110,167,218,0.4); border-radius: 3px; }
+.carousel-track { overflow-x: auto; scrollbar-width: thin; scrollbar-color: rgba(110,167,218,0.4) transparent; }
+.carousel-track::-webkit-scrollbar { height: 3px; }
+.carousel-track::-webkit-scrollbar-thumb { background: #6EA7DA; border-radius: 3px; }
+
+/* ── Card system ────────────────────────────────────────────── */
+.enei-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(110,167,218,0.30);
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(48,64,111,0.08);
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+.enei-card:hover {
+  box-shadow: 0px 12px 32px rgba(48,64,111,0.14);
+  transform: translateY(-3px);
+  border-color: rgba(110,167,218,0.55);
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn-gold {
+  background: #FABF38;
+  color: #30406F;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(250,191,56,0.35);
+  white-space: nowrap;
+}
+.btn-gold:hover {
+  background: #E5A91A;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(250,191,56,0.45);
+}
+
+.btn-navy {
+  background: transparent;
+  color: #30406F;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  border: 2px solid #30406F;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+.btn-navy:hover {
+  background: #30406F;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.btn-sky {
+  background: #6EA7DA;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+}
+.btn-sky:hover { background: #5596CC; transform: translateY(-1px); }
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.badge-gold {
+  background: #FEF7E6;
+  color: #30406F;
+  border: 1px solid rgba(250,191,56,0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.badge-sky {
+  background: #EBF4FB;
+  color: #30406F;
+  border: 1px solid rgba(110,167,218,0.4);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: 'Poppins', sans-serif;
+}
+.badge-navy {
+  background: #30406F;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Typography helpers ──────────────────────────────────────── */
+.h-display {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: #30406F;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+.h-section {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #30406F;
+  letter-spacing: -0.015em;
+}
+.body-text { font-family: 'Poppins', sans-serif; color: #334155; line-height: 1.7; }
+.muted-text { font-family: 'Poppins', sans-serif; color: #64748B; }
+
+/* ── Progress bar ───────────────────────────────────────────── */
+.progress-track { background: #EBF4FB; border-radius: 999px; height: 7px; overflow: hidden; }
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6EA7DA, #30406F);
+  transition: width 0.7s ease;
+}
+.progress-fill-gold {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #FABF38, #E5A91A);
+  transition: width 0.7s ease;
+}
+
+/* ── Input ──────────────────────────────────────────────────── */
+.input-light {
+  background: #FFFFFF;
+  border: 1.5px solid rgba(110,167,218,0.45);
+  border-radius: 8px;
+  color: #334155;
+  padding: 0.625rem 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.input-light:focus {
+  border-color: #6EA7DA;
+  box-shadow: 0 0 0 3px rgba(110,167,218,0.18);
+}
+.input-light::placeholder { color: #94A3B8; }
+
+/* ── Section divider ─────────────────────────────────────────── */
+.section-alt { background: #F8FAFC; }
+.section-white { background: #FFFFFF; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .two-col { grid-template-columns: 1fr !important; }
+  .hide-md { display: none !important; }
+}
+@media (max-width: 640px) {
+  .hide-sm { display: none !important; }
+}
