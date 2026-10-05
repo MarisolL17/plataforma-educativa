@@ -1,3 +1,4 @@
+// src/pages/PerfilView.tsx
 import React, { useState, useEffect } from 'react';
 import { NAVY, SKY, GOLD, MUTED, BORDER } from '../constants/colors';
 import { Field } from '../components/Common/Field';
@@ -6,7 +7,7 @@ import { SelectField } from '../components/Common/SelectField';
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 // ==========================================
-// INTERFACES (Estructura de Datos por Cuadro)
+// INTERFACES
 // ==========================================
 
 export interface NivelAcademicoItem {
@@ -99,7 +100,7 @@ interface PerfilViewProps {
   onVolver: () => void;
 }
 
-export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewProps) {
+export function PerfilView({ usuarioId, initialData, onVolver }: PerfilViewProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving]   = useState(false);
   const [msg, setMsg]         = useState({ text: '', isError: false });
@@ -108,67 +109,84 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
   // ==========================================
   // ESTADOS: INFORMACIÓN PERSONAL
   // ==========================================
-  const [apellidoPaterno, setApellidoPaterno] = useState(initialData?.apellidoPaterno || '');
-  const [apellidoMaterno, setApellidoMaterno] = useState(initialData?.apellidoMaterno || '');
-  const [nombres, setNombres]                 = useState(initialData?.nombres || '');
-  const [tipoDoc, setTipoDoc]                 = useState(initialData?.tipoDoc || 'DNI');
-  const [nroDoc, setNroDoc]                   = useState(initialData?.dni_documento || '');
-  const [fechaNacimiento, setFechaNacimiento] = useState(initialData?.fechaNacimiento || '');
-  const [estadoCivil, setEstadoCivil]         = useState(initialData?.estadoCivil || '');
-  const [sexo, setSexo]                       = useState(initialData?.sexo || '');
-  const [ruc, setRuc]                         = useState(initialData?.ruc || '');
-  const [correo, setCorreo]                   = useState(initialData?.correo || '');
-  const [movil, setMovil]                     = useState(initialData?.movil || '');
-  const [telefonoFijo, setTelefonoFijo]       = useState(initialData?.telefonoFijo || '');
-  const [paisNacimiento, setPaisNacimiento]   = useState(initialData?.paisNacimiento || 'Perú');
-  const [lugarNacimiento, setLugarNacimiento] = useState(initialData?.lugarNacimiento || '');
-  const [direccion, setDireccion]             = useState(initialData?.direccion || '');
-  const [lugarResidencia, setLugarResidencia] = useState(initialData?.lugarResidencia || '');
+  const [apellidoPaterno, setApellidoPaterno] = useState('');
+  const [apellidoMaterno, setApellidoMaterno] = useState('');
+  const [nombres, setNombres]                 = useState('');
+  const [tipoDoc, setTipoDoc]                 = useState('DNI');
+  const [nroDoc, setNroDoc]                   = useState('');
+  const [fechaNacimiento, setFechaNacimiento] = useState('');
+  const [estadoCivil, setEstadoCivil]         = useState('');
+  const [sexo, setSexo]                       = useState('');
+  const [ruc, setRuc]                         = useState('');
+  const [correo, setCorreo]                   = useState('');
+  const [movil, setMovil]                     = useState('');
+  const [telefonoFijo, setTelefonoFijo]       = useState('');
+  const [paisNacimiento, setPaisNacimiento]   = useState('Perú');
+  const [lugarNacimiento, setLugarNacimiento] = useState('');
+  const [direccion, setDireccion]             = useState('');
+  const [lugarResidencia, setLugarResidencia] = useState('');
 
   // ==========================================
-  // ESTADOS: CUADROS DEL PERFIL ACADÉMICO
+  // ESTADOS: CUADROS ACADÉMICOS Y LABORALES
   // ==========================================
-  const [nivelesAcademicos, setNivelesAcademicos] = useState<NivelAcademicoItem[]>(initialData?.nivelesAcademicos || []);
-  const [postgrados, setPostgrados]               = useState<PostgradoItem[]>(initialData?.postgrados || []);
-  const [educacionComp, setEducacionComp]         = useState<EducacionComplementariaItem[]>(initialData?.educacionComp || []);
-  const [idiomas, setIdiomas]                     = useState<IdiomaItem[]>(initialData?.idiomas || []);
+  const [nivelesAcademicos, setNivelesAcademicos] = useState<NivelAcademicoItem[]>([]);
+  const [postgrados, setPostgrados]               = useState<PostgradoItem[]>([]);
+  const [educacionComp, setEducacionComp]         = useState<EducacionComplementariaItem[]>([]);
+  const [idiomas, setIdiomas]                     = useState<IdiomaItem[]>([]);
+  const [expInei, setExpInei]                     = useState<ExperienciaIneiItem[]>([]);
+  const [otrasExp, setOtrasExp]                   = useState<OtraExperienciaItem[]>([]);
+  const [meritos, setMeritos]                     = useState<MeritoItem[]>([]);
+  const [publicaciones, setPublicaciones]         = useState<PublicacionItem[]>([]);
+  const [docsAdicionales, setDocsAdicionales]     = useState<DocumentoAdicionalItem[]>([]);
+  const [habilidades, setHabilidades]             = useState('');
 
   // ==========================================
-  // ESTADOS: CUADROS DEL PERFIL LABORAL
+  // CARGA Y SINCRONIZACIÓN DE DATOS
   // ==========================================
-  const [expInei, setExpInei]               = useState<ExperienciaIneiItem[]>(initialData?.expInei || []);
-  const [otrasExp, setOtrasExp]             = useState<OtraExperienciaItem[]>(initialData?.otrasExp || []);
-  const [meritos, setMeritos]               = useState<MeritoItem[]>(initialData?.meritos || []);
-  const [publicaciones, setPublicaciones]   = useState<PublicacionItem[]>(initialData?.publicaciones || []);
-  const [docsAdicionales, setDocsAdicionales] = useState<DocumentoAdicionalItem[]>(initialData?.docsAdicionales || []);
-  const [habilidades, setHabilidades]       = useState(initialData?.skills || '');
-
-  // ==========================================
-  // CARGA DE DATOS DESDE EL BACKEND
-  // ==========================================
-
-// Reemplaza la sección de useEffect en tu src/pages/PerfilView.tsx con esta versión:
-
   useEffect(() => {
     const fetchPerfil = async () => {
       setLoading(true);
 
-      // 1. Cargar el usuario local por defecto (Fallback)
       const storedUser = localStorage.getItem('usuario');
-      const localData = initialData || (storedUser ? JSON.parse(storedUser) : null);
+      const localUser = storedUser ? JSON.parse(storedUser) : null;
+      const dataFuente = initialData || localUser;
 
-      if (localData) {
-        setApellidoPaterno(localData.apellidoPaterno || localData.apellido_paterno || '');
-        setApellidoMaterno(localData.apellidoMaterno || localData.apellido_materno || '');
-        setNombres(localData.nombres || localData.nombre || '');
-        setTipoDoc(localData.tipoDoc || localData.tipo_doc || 'DNI');
-        setNroDoc(localData.nroDoc || localData.dni_documento || localData.dni || '');
-        setCorreo(localData.correo || localData.email || '');
-        setMovil(localData.movil || localData.telefono || '');
+      const pInit = initialData?.personal || dataFuente || {};
+      setApellidoPaterno(pInit.apellidoPaterno || pInit.apellido_paterno || '');
+      setApellidoMaterno(pInit.apellidoMaterno || pInit.apellido_materno || '');
+      setNombres(pInit.nombres || pInit.nombre || '');
+      setTipoDoc(pInit.tipoDoc || pInit.tipo_doc || 'DNI');
+      setNroDoc(pInit.nroDoc || pInit.dni_documento || pInit.dni || '');
+      setFechaNacimiento(pInit.fechaNacimiento || pInit.fecha_nacimiento || '');
+      setEstadoCivil(pInit.estadoCivil || pInit.estado_civil || '');
+      setSexo(pInit.sexo || '');
+      setRuc(pInit.ruc || '');
+      setCorreo(pInit.correo || pInit.email || '');
+      setMovil(pInit.movil || pInit.telefono || '');
+      setTelefonoFijo(pInit.telefonoFijo || pInit.telefono_fijo || '');
+      setPaisNacimiento(pInit.paisNacimiento || pInit.pais_nacimiento || 'Perú');
+      setLugarNacimiento(pInit.lugarNacimiento || pInit.lugar_nacimiento || '');
+      setDireccion(pInit.direccion || '');
+      setLugarResidencia(pInit.lugarResidencia || pInit.lugar_residencia || '');
+
+      if (initialData?.academico) {
+        setNivelesAcademicos(initialData.academico.nivelesAcademicos || []);
+        setPostgrados(initialData.academico.postgrados || []);
+        setEducacionComp(initialData.academico.educacionComp || []);
+        setIdiomas(initialData.academico.idiomas || []);
       }
 
-      const targetId = usuarioId || localData?.id;
-      if (!targetId) {
+      if (initialData?.laboral) {
+        setExpInei(initialData.laboral.expInei || []);
+        setOtrasExp(initialData.laboral.otrasExp || []);
+        setMeritos(initialData.laboral.meritos || []);
+        setPublicaciones(initialData.laboral.publicaciones || []);
+        setDocsAdicionales(initialData.laboral.docsAdicionales || []);
+        setHabilidades(initialData.laboral.habilidades || initialData.laboral.skills || '');
+      }
+
+      const targetId = usuarioId || localUser?.id;
+      if (!targetId || initialData) {
         setLoading(false);
         return;
       }
@@ -180,19 +198,19 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
           const p = data.personal || {};
 
           if (p && Object.keys(p).length > 0) {
-            setApellidoPaterno(p.apellidoPaterno || p.apellido_paterno || localData?.apellidoPaterno || localData?.apellido_paterno || '');
-            setApellidoMaterno(p.apellidoMaterno || p.apellido_materno || localData?.apellidoMaterno || localData?.apellido_materno || '');
-            setNombres(p.nombres || p.nombre || localData?.nombres || localData?.nombre || '');
-            setTipoDoc(p.tipoDoc || p.tipo_doc || '');
-            setNroDoc(p.nroDoc || p.dni_documento || p.dni || localData?.dni_documento || '');
+            setApellidoPaterno(p.apellidoPaterno || p.apellido_paterno || '');
+            setApellidoMaterno(p.apellidoMaterno || p.apellido_materno || '');
+            setNombres(p.nombres || p.nombre || '');
+            setTipoDoc(p.tipoDoc || p.tipo_doc || 'DNI');
+            setNroDoc(p.nroDoc || p.dni_documento || p.dni || '');
             setFechaNacimiento(p.fechaNacimiento || p.fecha_nacimiento || '');
             setEstadoCivil(p.estadoCivil || p.estado_civil || '');
             setSexo(p.sexo || '');
             setRuc(p.ruc || '');
-            setCorreo(p.correo || p.email || localData?.correo || localData?.email || '');
-            setMovil(p.movil || p.telefono || localData?.movil || '');
+            setCorreo(p.correo || p.email || '');
+            setMovil(p.movil || p.telefono || '');
             setTelefonoFijo(p.telefonoFijo || p.telefono_fijo || '');
-            setPaisNacimiento(p.paisNacimiento || p.pais_nacimiento || '');
+            setPaisNacimiento(p.paisNacimiento || p.pais_nacimiento || 'Perú');
             setLugarNacimiento(p.lugarNacimiento || p.lugar_nacimiento || '');
             setDireccion(p.direccion || '');
             setLugarResidencia(p.lugarResidencia || p.lugar_residencia || '');
@@ -211,7 +229,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
             setMeritos(data.laboral.meritos || []);
             setPublicaciones(data.laboral.publicaciones || []);
             setDocsAdicionales(data.laboral.docsAdicionales || []);
-            setHabilidades(data.laboral.habilidades || '');
+            setHabilidades(data.laboral.habilidades || data.laboral.skills || '');
           }
         }
       } catch (error) {
@@ -225,77 +243,69 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
   }, [usuarioId, initialData]);
 
   // ==========================================
-  // GESTIÓN DE MODALES DINÁMICOS
+  // GESTIÓN DE MODALES DINÁMICOS (CREAR Y EDITAR)
   // ==========================================
-  const [modalType, setModalType] = useState<string | null>(null);
-  const [formData, setFormData]   = useState<any>({});
+  const [modalType, setModalType]       = useState<string | null>(null);
+  const [formData, setFormData]         = useState<any>({});
+  const [editingId, setEditingId]       = useState<string | null>(null); // ID del objeto siendo editado
 
-  const openModal = (type: string) => {
+  const openModalForCreate = (type: string) => {
     setFormData({});
+    setEditingId(null);
+    setModalType(type);
+  };
+
+  const openModalForEdit = (type: string, item: any) => {
+    setFormData({ ...item });
+    setEditingId(item.id);
     setModalType(type);
   };
 
   const closeModal = () => {
     setModalType(null);
     setFormData({});
+    setEditingId(null);
   };
 
   const handleSaveModalItem = (e: React.FormEvent) => {
     e.preventDefault();
-    const newItem = { ...formData, id: Date.now().toString() };
+    
+    // Función auxiliar para actualizar o agregar ítem en una lista
+    const updateOrAdd = (list: any[], setList: Function) => {
+      if (editingId) {
+        setList(list.map(i => i.id === editingId ? { ...formData, id: editingId } : i));
+      } else {
+        const newItem = { ...formData, id: Date.now().toString() };
+        setList([...list, newItem]);
+      }
+    };
 
     switch (modalType) {
-      case 'nivelAcademico':
-        setNivelesAcademicos([...nivelesAcademicos, newItem]);
-        break;
-      case 'postgrado':
-        setPostgrados([...postgrados, newItem]);
-        break;
-      case 'educacionComp':
-        setEducacionComp([...educacionComp, newItem]);
-        break;
-      case 'idioma':
-        setIdiomas([...idiomas, newItem]);
-        break;
-      case 'expInei':
-        setExpInei([...expInei, newItem]);
-        break;
-      case 'otraExp':
-        setOtrasExp([...otrasExp, newItem]);
-        break;
-      case 'merito':
-        setMeritos([...meritos, newItem]);
-        break;
-      case 'publicacion':
-        setPublicaciones([...publicaciones, newItem]);
-        break;
-      case 'docAdicional':
-        setDocsAdicionales([...docsAdicionales, newItem]);
-        break;
-      default:
-        break;
+      case 'nivelAcademico': updateOrAdd(nivelesAcademicos, setNivelesAcademicos); break;
+      case 'postgrado':      updateOrAdd(postgrados, setPostgrados); break;
+      case 'educacionComp':  updateOrAdd(educacionComp, setEducacionComp); break;
+      case 'idioma':         updateOrAdd(idiomas, setIdiomas); break;
+      case 'expInei':        updateOrAdd(expInei, setExpInei); break;
+      case 'otraExp':        updateOrAdd(otrasExp, setOtrasExp); break;
+      case 'merito':         updateOrAdd(meritos, setMeritos); break;
+      case 'publicacion':    updateOrAdd(publicaciones, setPublicaciones); break;
+      case 'docAdicional':   updateOrAdd(docsAdicionales, setDocsAdicionales); break;
+      default: break;
     }
     closeModal();
   };
 
-  // Reemplaza handleGuardarPerfil en src/pages/PerfilView.tsx
-
+  // ==========================================
+  // GUARDAR TODO EL PERFIL
+  // ==========================================
   const handleGuardarPerfil = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMsg({ text: '', isError: false });
 
-    // 1. Intentar obtener el ID desde las props o desde el localStorage
     const storedUserStr = localStorage.getItem('usuario');
     const storedUser = storedUserStr ? JSON.parse(storedUserStr) : null;
-
-    const targetId = Number(usuarioId || storedUser?.id)
-
-    if (!targetId || isNaN(targetId) || targetId <= 0) {
-      setMsg({ text: 'ID de usuario inválido', isError: true });
-      setSaving(false);
-      return;
-    }
+    const targetId = Number(usuarioId || storedUser?.id || 1);
 
     const payload = {
       usuario_id: targetId,
@@ -331,10 +341,13 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.detail || `Error ${response.status}: No se encontró la ruta o el usuario`);
+        throw new Error(data.detail || `Error ${response.status}: No se pudo guardar la información.`);
       }
 
       setMsg({ text: '¡Perfil actualizado exitosamente!', isError: false });
+      setTimeout(() => {
+        if (onVolver) onVolver();
+      }, 1200);
     } catch (err: any) {
       setMsg({ text: err?.message || 'Error al guardar los datos', isError: true });
     } finally {
@@ -345,7 +358,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
   if (loading) {
     return (
       <div style={{ background: '#F8FAFC', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ fontFamily: 'Montserrat', fontWeight: 600, color: NAVY }}>Cargando perfil del usuario...</p>
+        <p style={{ fontFamily: 'Montserrat', fontWeight: 600, color: NAVY }}>Cargando legajo del usuario...</p>
       </div>
     );
   }
@@ -358,7 +371,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
           <div>
             <button onClick={onVolver} style={{ background: 'none', border: 'none', color: SKY, fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: 6 }}>
-              ← Volver a la Plataforma
+              ← Volver
             </button>
             <h1 style={{ fontFamily: 'Montserrat', fontWeight: 800, fontSize: '1.75rem', color: NAVY }}>
               Ficha del Postulante / Perfil Profesional
@@ -372,7 +385,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
           </div>
         </div>
 
-        {/* NAVEGACIÓN DE SECCIONES (TABS) */}
+        {/* PESTAÑAS */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: `2px solid ${BORDER}` }}>
           {[
             { id: 'personal', label: '👤 Información Personal' },
@@ -408,9 +421,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
 
         <form onSubmit={handleGuardarPerfil} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
-          {/* ========================================== */}
-          {/* SECCIÓN 1: INFORMACIÓN PERSONAL            */}
-          {/* ========================================== */}
+          {/* INFORMACIÓN PERSONAL */}
           {activeTab === 'personal' && (
             <div className="enei-card" style={{ padding: '2rem' }}>
               <h3 style={{ fontFamily: 'Montserrat', fontWeight: 700, fontSize: '1.1rem', color: NAVY, marginBottom: '1.25rem', borderBottom: `1px solid ${BORDER}`, paddingBottom: '0.5rem' }}>
@@ -441,15 +452,14 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
             </div>
           )}
 
-          {/* ========================================== */}
-          {/* SECCIÓN 2: PERFIL ACADÉMICO               */}
-          {/* ========================================== */}
+          {/* PERFIL ACADÉMICO */}
           {activeTab === 'academico' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               <TableCard
                 title="Cuadro 1: Nivel Académico"
                 subtitle="Título Profesional, Bachiller, Egresado o Secundaria"
-                onAdd={() => openModal('nivelAcademico')}
+                onAdd={() => openModalForCreate('nivelAcademico')}
+                onEdit={(item) => openModalForEdit('nivelAcademico', item)}
                 headers={['Nivel', 'Carrera', 'Centro de Estudios', 'Grado', 'Emisión', 'Acciones']}
                 items={nivelesAcademicos}
                 renderRow={(item: NivelAcademicoItem) => (
@@ -467,7 +477,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 2: Postgrado o Especialización"
                 subtitle="Doctorados, Maestrías, Diplomados y Cursos de Especialización"
-                onAdd={() => openModal('postgrado')}
+                onAdd={() => openModalForCreate('postgrado')}
+                onEdit={(item) => openModalForEdit('postgrado', item)}
                 headers={['Nivel', 'Grado / Título', 'Postgrado', 'Centro de Estudios', 'Emisión', 'Acciones']}
                 items={postgrados}
                 renderRow={(item: PostgradoItem) => (
@@ -485,7 +496,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 3: Educación Complementaria"
                 subtitle="Cursos, Seminarios Taller, Certificaciones, otros"
-                onAdd={() => openModal('educacionComp')}
+                onAdd={() => openModalForCreate('educacionComp')}
+                onEdit={(item) => openModalForEdit('educacionComp', item)}
                 headers={['Estudio Realizado', 'Centro de Estudios', 'Duración', 'Emisión', 'Acciones']}
                 items={educacionComp}
                 renderRow={(item: EducacionComplementariaItem) => (
@@ -502,7 +514,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 4: Idioma(s) o Lenguas"
                 subtitle="Idiomas que habla y su nivel de dominio"
-                onAdd={() => openModal('idioma')}
+                onAdd={() => openModalForCreate('idioma')}
+                onEdit={(item) => openModalForEdit('idioma', item)}
                 headers={['Idioma / Lengua', 'Nivel de Dominio', 'Acciones']}
                 items={idiomas}
                 renderRow={(item: IdiomaItem) => (
@@ -516,15 +529,14 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
             </div>
           )}
 
-          {/* ========================================== */}
-          {/* SECCIÓN 3: PERFIL LABORAL & MÉRITOS       */}
-          {/* ========================================== */}
+          {/* PERFIL LABORAL & MÉRITOS */}
           {activeTab === 'laboral' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               <TableCard
                 title="Cuadro 1: Experiencia Laboral INEI"
                 subtitle="Información extraída o acreditada de contrataciones en INEI"
-                onAdd={() => openModal('expInei')}
+                onAdd={() => openModalForCreate('expInei')}
+                onEdit={(item) => openModalForEdit('expInei', item)}
                 headers={['Dependencia', 'Cargo Contractual', 'N° Contrato', 'Periodo', 'Acciones']}
                 items={expInei}
                 renderRow={(item: ExperienciaIneiItem) => (
@@ -541,7 +553,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 2: Otras Experiencias Laborales"
                 subtitle="Constancias y Certificados de trabajo en sector público/privado"
-                onAdd={() => openModal('otraExp')}
+                onAdd={() => openModalForCreate('otraExp')}
+                onEdit={(item) => openModalForEdit('otraExp', item)}
                 headers={['Institución / Empresa', 'Cargo', 'Periodo', 'Tiempo Total', 'Acciones']}
                 items={otrasExp}
                 renderRow={(item: OtraExperienciaItem) => (
@@ -558,7 +571,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 3: Méritos y Reconocimientos"
                 subtitle="Reconocimientos oficiales y felicitaciones"
-                onAdd={() => openModal('merito')}
+                onAdd={() => openModalForCreate('merito')}
+                onEdit={(item) => openModalForEdit('merito', item)}
                 headers={['Tipo Doc.', 'Institución', 'Título del Reconocimiento', 'Fecha', 'Acciones']}
                 items={meritos}
                 renderRow={(item: MeritoItem) => (
@@ -575,7 +589,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 4: Publicaciones"
                 subtitle="Libros, artículos de investigación o ensayos"
-                onAdd={() => openModal('publicacion')}
+                onAdd={() => openModalForCreate('publicacion')}
+                onEdit={(item) => openModalForEdit('publicacion', item)}
                 headers={['Título de la Publicación', 'Tipo', 'Fecha Emisión', 'Acciones']}
                 items={publicaciones}
                 renderRow={(item: PublicacionItem) => (
@@ -591,7 +606,8 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
               <TableCard
                 title="Cuadro 5: Documentos Adicionales"
                 subtitle="Fuerzas Armadas, CONADIS, Colegiatura, Brevete, etc."
-                onAdd={() => openModal('docAdicional')}
+                onAdd={() => openModalForCreate('docAdicional')}
+                onEdit={(item) => openModalForEdit('docAdicional', item)}
                 headers={['Documento Adicional / Tipo', 'Estado Adjunto', 'Acciones']}
                 items={docsAdicionales}
                 renderRow={(item: DocumentoAdicionalItem) => (
@@ -619,7 +635,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
             </div>
           )}
 
-          {/* BOTÓN GENERAL DE GUARDAR */}
+          {/* BOTÓN GENERAL */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
             <button type="button" onClick={onVolver} style={{ padding: '0.75rem 1.5rem', borderRadius: 8, border: `1px solid ${BORDER}`, background: '#FFF', color: NAVY, fontWeight: 600, cursor: 'pointer' }}>
               Cancelar
@@ -637,6 +653,7 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
         <DynamicModal
           type={modalType}
           formData={formData}
+          isEditing={!!editingId}
           setFormData={setFormData}
           onClose={closeModal}
           onSave={handleSaveModalItem}
@@ -647,20 +664,21 @@ export function PerfilView({ usuarioId = 1, initialData, onVolver }: PerfilViewP
 }
 
 // ==========================================
-// COMPONENTES AUXILIARES PARA TABLAS Y MODALES
+// COMPONENTES AUXILIARES
 // ==========================================
 
 interface TableCardProps {
   title: string;
   subtitle: string;
   onAdd: () => void;
+  onEdit: (item: any) => void;
   headers: string[];
   items: any[];
   renderRow: (item: any) => React.ReactNode;
   onDelete: (id: string) => void;
 }
 
-function TableCard({ title, subtitle, onAdd, headers, items, renderRow, onDelete }: TableCardProps) {
+function TableCard({ title, subtitle, onAdd, onEdit, headers, items, renderRow, onDelete }: TableCardProps) {
   return (
     <div className="enei-card" style={{ padding: '1.5rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -690,11 +708,14 @@ function TableCard({ title, subtitle, onAdd, headers, items, renderRow, onDelete
             </thead>
             <tbody>
               {items.map((item, idx) => (
-                <tr key={item.id} style={{ borderBottom: `1px solid ${BORDER}`, background: idx % 2 === 0 ? '#FFF' : '#F8FAFC' }}>
+                <tr key={item.id || idx} style={{ borderBottom: `1px solid ${BORDER}`, background: idx % 2 === 0 ? '#FFF' : '#F8FAFC' }}>
                   <td style={{ padding: '0.5rem', fontWeight: 600, color: NAVY }}>{idx + 1}</td>
                   {renderRow(item)}
-                  <td style={{ padding: '0.5rem', textAlign: 'center' }}>
-                    <button type="button" onClick={() => onDelete(item.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontWeight: 600 }}>
+                  <td style={{ padding: '0.5rem', textAlign: 'center', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                    <button type="button" onClick={() => onEdit(item)} title="Editar ítem" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem' }}>
+                      ✏️
+                    </button>
+                    <button type="button" onClick={() => onDelete(item.id)} title="Eliminar ítem" style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '0.9rem' }}>
                       🗑️
                     </button>
                   </td>
@@ -708,7 +729,7 @@ function TableCard({ title, subtitle, onAdd, headers, items, renderRow, onDelete
   );
 }
 
-function DynamicModal({ type, formData, setFormData, onClose, onSave }: any) {
+function DynamicModal({ type, formData, isEditing, setFormData, onClose, onSave }: any) {
   const updateField = (key: string, value: any) => {
     setFormData({ ...formData, [key]: value });
   };
@@ -717,7 +738,7 @@ function DynamicModal({ type, formData, setFormData, onClose, onSave }: any) {
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div style={{ background: '#FFF', borderRadius: 12, padding: '1.75rem', maxWidth: 500, width: '100%', maxHeight: '85vh', overflowY: 'auto' }}>
         <h4 style={{ fontFamily: 'Montserrat', fontWeight: 700, color: NAVY, marginBottom: '1rem' }}>
-          Registrar nuevo item
+          {isEditing ? '✏️ Editar registro' : '➕ Registrar nuevo ítem'}
         </h4>
 
         <form onSubmit={onSave} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
@@ -816,7 +837,7 @@ function DynamicModal({ type, formData, setFormData, onClose, onSave }: any) {
               Cancelar
             </button>
             <button type="submit" className="btn-gold" style={{ padding: '0.5rem 1rem', borderRadius: 6 }}>
-              Guardar Registro
+              {isEditing ? 'Guardar Cambios' : 'Guardar Registro'}
             </button>
           </div>
         </form>

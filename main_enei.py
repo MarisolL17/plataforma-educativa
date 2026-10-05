@@ -12,6 +12,7 @@ from registro.main_registro import router as router_autenticacion
 # Importamos el router del Módulo 2
 from modulos.modulo_2_evaluaciones.rutas import router as router_evaluaciones
 from modulos.modulo_2_evaluaciones.evaluador import get_db_connection
+from modulos.modulo_3_chatbot_rag.rutas import router as router_chatbot
 
 app = FastAPI(
     title="API Sistema de Evaluación ENEI",
@@ -29,7 +30,7 @@ app.add_middleware(
 # 1. Registrar el Router del Módulo 2 (incluye /generar-examen, /calificar-examen y /cursos)
 app.include_router(router_evaluaciones)
 app.include_router(router_autenticacion)
-
+app.include_router(router_chatbot)
 
 # 2. Endpoints Globales / Generales del Servidor
 @app.get("/")

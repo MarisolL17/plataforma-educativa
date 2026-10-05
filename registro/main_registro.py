@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from BD.database import engine, Base, get_db
 from . import models, schemas
 from passlib.context import CryptContext
+from registro.cv_parser import extraer_datos_cv_bytes
 
 # Crea las tablas en PostgreSQL si no existen
 models.Base.metadata.create_all(bind=engine)
@@ -226,3 +227,18 @@ def iniciar_sesion(credentials: schemas.LoginSchema, db: Session = Depends(get_d
         }
     }
     
+# -------------------------------------------------------------
+# 3. EXTRAER CV 
+# -------------------------------------------------------------
+
+@router.post("/extraer_cv")
+async def procesar_cv_pdf(file: UploadFile = File(...)):
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Solo se permiten archivos en formato PDF")
+
+    try:
+        contenido_bytes = await file.read()
+        datos_cv = extraer_datos_cv_bytes(contenido_bytes)
+        return datos_cv
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al analizar el CV: {str(e)}")
